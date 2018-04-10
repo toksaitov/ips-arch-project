@@ -228,7 +228,7 @@ static inline void apply_sepia_filter(uint8_t *pixels, size_t position)
     pixels[position + 2] =
         (uint8_t) red;
 
-#elif defined SEPIA_X87_ASM_IMPLEMENTATION
+#elif defined SEPIA_SIMD_ASM_IMPLEMENTATION
 
 #if defined x86_32_CPU
 
