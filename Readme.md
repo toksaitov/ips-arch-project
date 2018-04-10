@@ -138,7 +138,7 @@ parallelized. To deal with the problem, you have to implement a sorting network
 algorithm, called bitonic sort. Your task will be to study and understand the
 idea behind sorting networks and a certain implementation of the bitonic sort
 adapted to work with AVX registers on your own from the following research
-[paper](https://hal.inria.fr/hal-01512970v1/document) written by Berenger
+[paper](https://arxiv.org/pdf/1704.08579.pdf) written by Berenger
 Bramas. You have to read the whole paper, understand it, and find out the
 necessary bits that you need to use in your work. Note, that you only need to
 implement the bitonic sort without merging for a box window of up to 4 by 4
@@ -194,7 +194,7 @@ channel values to get a full grade.
 
 * [Image Processing Acceleration Techniques using Intel Streaming SIMD Extensions](https://software.intel.com/en-us/articles/image-processing-acceleration-techniques-using-intel-streaming-simd-extensions-and-intel-advanced-vector-extensions)
 
-* [Fast Sorting Algorithms using AVX-512 on Intel Knights Landing](https://hal.inria.fr/hal-01512970v1/document)
+* [A Novel Hybrid Quicksort Algorithm Vectorized using AVX-512 on Intel Skylake](https://arxiv.org/pdf/1704.08579.pdf)
 
 ## Documentation
 
