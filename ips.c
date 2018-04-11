@@ -101,7 +101,9 @@ PROFILER_START(10)
             size_t position = 0;
             for (size_t y = 0; y < height; ++y, position += padding) {
                 for (size_t x = 0; x < width; ++x, position += 3) {
-                    apply_sepia_filter(pixels, position);
+                    filters_apply_sepia(pixels, position);
+                    // filters_apply_brightness_contrast(pixels, position...)
+                    // filters_apply_median(pixels, position...)
                 }
             }
 PROFILER_STOP();
