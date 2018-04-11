@@ -117,11 +117,11 @@ static inline void filters_apply_brightness_contrast(
         (uint32_t) (current_red   * contrast + brightness);
 
     blue =
-        IPS_CLAMP(blue,  0, 255);
+        UTILS_CLAMP(blue,  0, 255);
     green =
-        IPS_CLAMP(green, 0, 255);
+        UTILS_CLAMP(green, 0, 255);
     red =
-        IPS_CLAMP(red,   0, 255);
+        UTILS_CLAMP(red,   0, 255);
 
     pixels[position] =
         (uint8_t) blue;
