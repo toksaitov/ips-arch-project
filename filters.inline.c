@@ -1,5 +1,5 @@
 #include "filters.h"
-#include "utilities.h"
+#include "utils.h"
 
 /*
     // AT&T/UNIX GCC Inline Assembly Sample
@@ -79,7 +79,7 @@
     // https://www.ibiblio.org/gferg/ldp/GCC-Inline-Assembly-HOWTO.html
 */
 
-static inline void apply_brightness_contrast_filter(
+static inline void filters_apply_brightness_contrast(
                        uint8_t *pixels,
                        size_t position,
                        float brightness,
@@ -169,7 +169,7 @@ static inline void apply_brightness_contrast_filter(
 #endif
 }
 
-static inline void apply_sepia_filter(uint8_t *pixels, size_t position)
+static inline void filters_apply_sepia(uint8_t *pixels, size_t position)
 {
     static const double Sepia_Coefficients[] = {
         0.272, 0.534, 0.131,
@@ -233,7 +233,7 @@ static inline void apply_sepia_filter(uint8_t *pixels, size_t position)
 #if defined x86_32_CPU
 
     __asm__ __volatile__ (
-        "addq $0x28, %%rsp\n\t" :::
+        "\n\t" :::
     );
 
 #elif defined x86_64_CPU
@@ -249,7 +249,7 @@ static inline void apply_sepia_filter(uint8_t *pixels, size_t position)
 #endif
 }
 
-static inline void apply_median_filter(
+static inline void filters_apply_median(
                        uint8_t *pixels,
                        size_t position
                    )

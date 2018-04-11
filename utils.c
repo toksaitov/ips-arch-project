@@ -1,4 +1,4 @@
-#include "utilities.h"
+#include "utils.h"
 
 #ifdef _WIN32
     #include <windows.h>
@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int ips_utils_get_number_of_cpu_cores()
+int utils_get_number_of_cpu_cores()
 {
     int result;
 

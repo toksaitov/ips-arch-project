@@ -34,7 +34,7 @@ to understand how you can work with bitmap data.
 ### Tasks
 
 1. Use the provided template, and specifically modify the
-   `apply_brightness_contrast(...)` function by inserting inline GCC assembly to
+   `filters_apply_brightness_contrast(...)` function by inserting inline GCC assembly to
    your code. If you do not like GCC inline assembly, you can create a separate
    assembly `.s` file, modify the build rules in `Makefile` to assemble the file
    separately and then to link it with the other `.o` files from C. Do not
@@ -61,7 +61,7 @@ same time. Then store the result back to memory.
 ### Tasks
 
 1. Use the provided template, and specifically modify the
-   `apply_brightness_contrast(...)` function by inserting inline GCC assembly to
+   `filters_apply_brightness_contrast(...)` function by inserting inline GCC assembly to
    your code. If you do not like GCC inline assembly, you can create a separate
    assembly `.s` file, modify the build rules in `Makefile` to assemble the file
    separately and then to link it with the other `.o` files from C. Do not
@@ -92,7 +92,7 @@ speed-up the solution as in the second part of the project.
 1. Find the coefficients you need to use in your work in the paper.
 
 2. Use the provided template, and specifically modify the
-   `apply_sepia_filter(...)` function by inserting inline GCC assembly to your
+   `filters_apply_sepia(...)` function by inserting inline GCC assembly to your
    code. If you do not like GCC inline assembly, you can create a separate
    assembly `.s` file, modify the build rules in `Makefile` to assemble the file
    separately and then to link it with the other `.o` files from C. Do not
@@ -152,7 +152,7 @@ channel values to get a full grade.
    in your work.
 
 2. Use the provided template, and specifically modify the
-   `apply_median_filter(...)` function by inserting inline GCC assembly to
+   `filters_apply_median(...)` function by inserting inline GCC assembly to
    accelerate your code. If you do not like GCC inline assembly, you can create
    a separate assembly `.s` file, modify the build rules in `Makefile` to
    assemble the file separately and then to link it with the other `.o` files
