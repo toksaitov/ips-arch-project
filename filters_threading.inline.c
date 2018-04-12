@@ -12,7 +12,7 @@ static inline filters_brightness_contrast_data_t *filters_brightness_contrast_da
                                                       float brightness,
                                                       float contrast,
                                                       volatile size_t *rows_left_shared,
-                                                      volatile bool *spinlock_sense
+                                                      volatile bool *barrier_sense
                                                   ) {
     filters_brightness_contrast_data_t *data =
         (filters_brightness_contrast_data_t *) malloc(sizeof(*data));
@@ -37,8 +37,8 @@ static inline filters_brightness_contrast_data_t *filters_brightness_contrast_da
         contrast;
     data->rows_left_shared =
         rows_left_shared;
-    data->spinlock_sense =
-        spinlock_sense;
+    data->barrier_sense =
+        barrier_sense;
 
     return data;
 }
@@ -57,7 +57,7 @@ static inline filters_sepia_data_t *filters_sepia_data_create(
                                         size_t height,
                                         uint8_t *pixels,
                                         volatile size_t *rows_left_shared,
-                                        volatile bool *spinlock_sense
+                                        volatile bool *barrier_sense
                                    ) {
     filters_sepia_data_t *data =
         (filters_sepia_data_t *) malloc(sizeof(*data));
@@ -78,8 +78,8 @@ static inline filters_sepia_data_t *filters_sepia_data_create(
         pixels;
     data->rows_left_shared =
         rows_left_shared;
-    data->spinlock_sense =
-        spinlock_sense;
+    data->barrier_sense =
+        barrier_sense;
 
     return data;
 }
@@ -98,7 +98,7 @@ static inline filters_median_data_t *filters_median_data_create(
                                          size_t height,
                                          uint8_t *pixels,
                                          volatile size_t *rows_left_shared,
-                                         volatile bool *spinlock_sense
+                                         volatile bool *barrier_sense
                                      ) {
     filters_median_data_t *data =
         (filters_median_data_t *) malloc(sizeof(*data));
@@ -119,8 +119,8 @@ static inline filters_median_data_t *filters_median_data_create(
         pixels;
     data->rows_left_shared =
         rows_left_shared;
-    data->spinlock_sense =
-        spinlock_sense;
+    data->barrier_sense =
+        barrier_sense;
 
     return data;
 }
@@ -166,7 +166,7 @@ static void filters_brightness_contrast_filter_task(
 
     size_t rows_left_shared = __sync_sub_and_fetch(data->rows_left_shared, height);
     if (0 == rows_left_shared) {
-        __sync_lock_test_and_set(data->spinlock_sense, true);
+        __sync_lock_test_and_set(data->barrier_sense, true);
     }
 
     filters_brightness_contrast_data_destroy(data);
@@ -199,7 +199,7 @@ static void filters_sepia_filter_task(
 
     size_t rows_left_shared = __sync_sub_and_fetch(data->rows_left_shared, height);
     if (0 == rows_left_shared) {
-        __sync_lock_test_and_set(data->spinlock_sense, true);
+        __sync_lock_test_and_set(data->barrier_sense, true);
     }
 
     filters_sepia_data_destroy(data);
@@ -232,7 +232,7 @@ static void filters_median_filter_task(
 
     size_t rows_left_shared = __sync_sub_and_fetch(data->rows_left_shared, height);
     if (0 == rows_left_shared) {
-        __sync_lock_test_and_set(data->spinlock_sense, true);
+        __sync_lock_test_and_set(data->barrier_sense, true);
     }
 
     filters_median_data_destroy(data);

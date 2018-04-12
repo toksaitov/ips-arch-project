@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
     {
         static volatile size_t rows_left_shared =
             0;
-        static volatile bool spinlock_sense =
+        static volatile bool barrier_sense =
             false;
         uint8_t *pixels =
             image.pixels;
@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
 PROFILER_START(1)
         rows_left_shared =
             height;
-        spinlock_sense =
+        barrier_sense =
             false;
 
         size_t linear_position =
@@ -241,7 +241,7 @@ PROFILER_START(1)
                                                                pixels,
                                                                brightness, contrast,
                                                                &rows_left_shared,
-                                                               &spinlock_sense
+                                                               &barrier_sense
                                                            );
             } else if (task == filters_sepia_filter_task) {
                 task_data =
@@ -250,7 +250,7 @@ PROFILER_START(1)
                                                  width, 1,
                                                  pixels,
                                                  &rows_left_shared,
-                                                 &spinlock_sense
+                                                 &barrier_sense
                                              );
             } else {
                 task_data =
@@ -259,14 +259,14 @@ PROFILER_START(1)
                                                   width, 1,
                                                   pixels,
                                                   &rows_left_shared,
-                                                  &spinlock_sense
+                                                  &barrier_sense
                                               );
             }
 
             threadpool_enqueue_task(threadpool, task, task_data, NULL);
         }
 
-        while (!spinlock_sense) { /* spin in a multicore cache-friendly way */ }
+        while (!barrier_sense) { }
 PROFILER_STOP();
     }
 
