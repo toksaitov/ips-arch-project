@@ -6,15 +6,15 @@
 #include <string.h>
 
 #include "bmp.h"
+#include "utils.h"
 #include "threadpool.h"
-#include "filters.h"
 #include "filters_threading.h"
 #include "profiler.h"
-#include "utils.h"
 
 static const char IPS_Usage[] =
-                    "Usage: ips "                                                                     \
-                        "<filter name> [brightness and contrast for brightness and contrast filter] " \
+                    "Usage: ips "                                                       \
+                        "<filter name (brightness-contrast | sepia | median)> "         \
+                        "[<brightness> <contrast> for brightness and contrast filter] " \
                         "<source bitmap image file> <destination bitmap image file>",
                   IPS_Brightness_Contrast_Filter_Name[] =
                     "brightness-contrast",
@@ -123,8 +123,10 @@ int main(int argc, char *argv[])
     bmp_image image;
     bmp_init_image_structure(&image);
 
-    FILE *source_descriptor      = NULL,
-         *destination_descriptor = NULL;
+    FILE *source_descriptor =
+        NULL;
+    FILE *destination_descriptor =
+        NULL;
 
     source_descriptor = fopen(source_file_name, "r");
     if (NULL == source_descriptor) {
@@ -228,10 +230,7 @@ PROFILER_START(1)
         barrier_sense =
             false;
 
-        size_t linear_position =
-            0;
-
-        for (size_t y = 0; y < height; ++y, linear_position += (width * 3 + row_padding)) {
+        for (size_t y = 0, linear_position = 0; y < height; ++y, linear_position += (width * 3 + row_padding)) {
             void *task_data;
             if (task == filters_brightness_contrast_filter_task) {
                 task_data =
@@ -263,7 +262,12 @@ PROFILER_START(1)
                                               );
             }
 
-            threadpool_enqueue_task(threadpool, task, task_data, NULL);
+            threadpool_enqueue_task(
+                threadpool,
+                task,
+                task_data,
+                NULL
+            );
         }
 
         while (!barrier_sense) { }

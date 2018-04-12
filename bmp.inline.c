@@ -19,11 +19,11 @@ static inline void bmp_free_image_structure(bmp_image *image)
     }
 }
 
-static inline void bmp_open_image_headers(
-                       FILE *file_descriptor,
-                       bmp_image *image,
-                       const char **error_message
-                   )
+static void bmp_open_image_headers(
+                FILE *file_descriptor,
+                bmp_image *image,
+                const char **error_message
+            )
 {
     *error_message = NULL;
 
@@ -95,11 +95,11 @@ end:
     return;
 }
 
-static inline void bmp_read_image_data(
-                       FILE *file_descriptor,
-                       bmp_image *image,
-                       const char **error_message
-                   )
+static void bmp_read_image_data(
+                FILE *file_descriptor,
+                bmp_image *image,
+                const char **error_message
+            )
 {
     *error_message = NULL;
 
@@ -200,11 +200,11 @@ cleanup:
     }
 }
 
-static inline void bmp_write_image_headers(
-                       FILE *file_descriptor,
-                       bmp_image *image,
-                       const char **error_message
-                   )
+static void bmp_write_image_headers(
+                FILE *file_descriptor,
+                bmp_image *image,
+                const char **error_message
+            )
 {
     *error_message = NULL;
 
@@ -250,11 +250,11 @@ end:
     return;
 }
 
-static inline void bmp_write_image_data(
-                       FILE *file_descriptor,
-                       bmp_image *image,
-                       const char **error_message
-                   )
+static void bmp_write_image_data(
+                FILE *file_descriptor,
+                bmp_image *image,
+                const char **error_message
+            )
 {
     *error_message = NULL;
 

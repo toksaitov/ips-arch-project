@@ -101,7 +101,7 @@ static inline void *queue_get_last(queue_t *queue)
     return queue_item_get_content(queue->last);
 }
 
-static inline void *queue_push(queue_t *queue, void *element)
+static void *queue_push(queue_t *queue, void *element)
 {
     queue_item_t *item = NULL;
 
@@ -125,7 +125,7 @@ static inline void *queue_push(queue_t *queue, void *element)
     return element;
 }
 
-static inline void *queue_deque(queue_t *queue)
+static void *queue_deque(queue_t *queue)
 {
     void *result = NULL;
 
@@ -149,7 +149,7 @@ static inline void *queue_deque(queue_t *queue)
     return result;
 }
 
-static inline void *queue_pop(queue_t *queue)
+static void *queue_pop(queue_t *queue)
 {
     void *result = NULL;
 

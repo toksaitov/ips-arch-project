@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static inline int utils_get_number_of_cpu_cores()
+static size_t utils_get_number_of_cpu_cores()
 {
     int result;
 
@@ -46,6 +46,6 @@ static inline int utils_get_number_of_cpu_cores()
         result = 1;
     }
 
-    return result;
+    return (size_t) result;
 }
 

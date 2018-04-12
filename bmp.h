@@ -83,29 +83,29 @@ typedef struct _bmp_image
 static inline void bmp_init_image_structure(bmp_image *image);
 static inline void bmp_free_image_structure(bmp_image *image);
 
-static inline void bmp_open_image_headers(
-                       FILE *file_descriptor,
-                       bmp_image *image,
-                       const char **error_message
-                   );
+static void bmp_open_image_headers(
+                FILE *file_descriptor,
+                bmp_image *image,
+                const char **error_message
+            );
 
-static inline void bmp_read_image_data(
-                       FILE *file_descriptor,
-                       bmp_image *image,
-                       const char **error_message
-                   );
+static void bmp_read_image_data(
+                FILE *file_descriptor,
+                bmp_image *image,
+                const char **error_message
+            );
 
-static inline void bmp_write_image_headers(
-                       FILE *file_descriptor,
-                       bmp_image *image,
-                       const char **error_message
-                   );
+static void bmp_write_image_headers(
+                FILE *file_descriptor,
+                bmp_image *image,
+                const char **error_message
+            );
 
-static inline void bmp_write_image_data(
-                       FILE *file_descriptor,
-                       bmp_image *image,
-                       const char **error_message
-                   );
+static void bmp_write_image_data(
+                FILE *file_descriptor,
+                bmp_image *image,
+                const char **error_message
+            );
 
 #include "bmp.inline.c"
 

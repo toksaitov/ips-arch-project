@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#define MEDIAN_FILTER_WINDOW_SIZE 4
+
 static inline void filters_apply_brightness_contrast(
                        uint8_t *pixels,
                        size_t position,
@@ -11,9 +13,11 @@ static inline void filters_apply_brightness_contrast(
                        float contrast
                    );
 
-static inline void filters_apply_sepia(uint8_t *pixels, size_t position);
+static inline void filters_apply_sepia(
+                       uint8_t *pixels,
+                       size_t position
+                   );
 
-#define MEDIAN_FILTER_WINDOW_SIZE 4
 static inline void filters_apply_median(
                        uint8_t *pixels,
                        size_t position

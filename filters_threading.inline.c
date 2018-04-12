@@ -43,7 +43,9 @@ static inline filters_brightness_contrast_data_t *filters_brightness_contrast_da
     return data;
 }
 
-static inline void filters_brightness_contrast_data_destroy(filters_brightness_contrast_data_t *data)
+static inline void filters_brightness_contrast_data_destroy(
+                       filters_brightness_contrast_data_t *data
+                   )
 {
     if (NULL != data) {
         free(data);
@@ -84,7 +86,9 @@ static inline filters_sepia_data_t *filters_sepia_data_create(
     return data;
 }
 
-static inline void filters_sepia_data_destroy(filters_sepia_data_t *data)
+static inline void filters_sepia_data_destroy(
+                       filters_sepia_data_t *data
+                   )
 {
     if (NULL != data) {
         free(data);
@@ -125,7 +129,9 @@ static inline filters_median_data_t *filters_median_data_create(
     return data;
 }
 
-static inline void filters_median_data_destroy(filters_median_data_t *data)
+static inline void filters_median_data_destroy(
+                       filters_median_data_t *data
+                   )
 {
     if (NULL != data) {
         free(data);

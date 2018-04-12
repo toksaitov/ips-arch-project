@@ -140,7 +140,10 @@ static inline void filters_apply_brightness_contrast(
 #endif
 }
 
-static inline void filters_apply_sepia(uint8_t *pixels, size_t position)
+static inline void filters_apply_sepia(
+                       uint8_t *pixels,
+                       size_t position
+                   )
 {
     static const double Sepia_Coefficients[] = {
         0.272, 0.534, 0.131,

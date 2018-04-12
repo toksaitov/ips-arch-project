@@ -24,9 +24,9 @@ static inline size_t synchronized_queue_get_size(synchronized_queue_t *queue);
 
 static inline bool synchronized_queue_is_empty(synchronized_queue_t *queue);
 
-static inline synchronized_queue_t *synchronized_queue_enqueue(synchronized_queue_t *queue, void *data);
+static synchronized_queue_t *synchronized_queue_enqueue(synchronized_queue_t *queue, void *data);
 
-static inline void *synchronized_queue_pop(synchronized_queue_t *queue);
+static void *synchronized_queue_pop(synchronized_queue_t *queue);
 
 #include "synchronized_queue.inline.c"
 

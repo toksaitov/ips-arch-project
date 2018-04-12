@@ -51,11 +51,11 @@ static inline void *queue_get_first(queue_t *queue);
 
 static inline void *queue_get_last(queue_t *queue);
 
-static inline void *queue_push(queue_t *queue, void *element);
+static void *queue_push(queue_t *queue, void *element);
 
-static inline void *queue_deque(queue_t *queue);
+static void *queue_deque(queue_t *queue);
 
-static inline void *queue_pop(queue_t *queue);
+static void *queue_pop(queue_t *queue);
 
 #include "queue.inline.c"
 

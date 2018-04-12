@@ -26,7 +26,7 @@ static inline threadpool_t *threadpool_allocate(void)
     return (threadpool_t *) malloc(sizeof(threadpool_t));
 }
 
-static inline threadpool_t *threadpool_init(threadpool_t *threadpool, size_t pool_size)
+static threadpool_t *threadpool_init(threadpool_t *threadpool, size_t pool_size)
 {
     threadpool->thread_count =
         pool_size;
@@ -72,7 +72,7 @@ static inline threadpool_t *threadpool_create(size_t pool_size)
     return threadpool;
 }
 
-static inline void threadpool_destroy(threadpool_t *threadpool)
+static void threadpool_destroy(threadpool_t *threadpool)
 {
     if (NULL == threadpool) {
         return;
