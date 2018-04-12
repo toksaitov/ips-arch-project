@@ -86,51 +86,22 @@ static inline void filters_apply_brightness_contrast(
                        float contrast
                    )
 {
-#if !defined BRIGHTNESS_CONTRAST_C_IMPLEMENTATION       && \
-    !defined BRIGHTNESS_CONTRAST_X87_ASM_IMPLEMENTATION && \
-    !defined BRIGHTNESS_CONTRAST_SIMD_ASM_IMPLEMENTATION
-#define SEPIA_C_IMPLEMENTATION 1
+#if !defined FILTERS_C_IMPLEMENTATION       && \
+    !defined FILTERS_X87_ASM_IMPLEMENTATION && \
+    !defined FILTERS_ASM_IMPLEMENTATION
+#define FILTERS_C_IMPLEMENTATION 1
 #endif
 
-#if defined BRIGHTNESS_CONTRAST_C_IMPLEMENTATION
-
-    uint32_t red,
-             green,
-             blue;
-
-    uint32_t current_red,
-             current_green,
-             current_blue;
-
-    current_blue =
-        pixels[position];
-    current_green =
-        pixels[position + 1];
-    current_red =
-        pixels[position + 2];
-
-    blue =
-        (uint32_t) (current_blue  * contrast + brightness);
-    green =
-        (uint32_t) (current_green * contrast + brightness);
-    red =
-        (uint32_t) (current_red   * contrast + brightness);
-
-    blue =
-        UTILS_CLAMP(blue,  0, 255);
-    green =
-        UTILS_CLAMP(green, 0, 255);
-    red =
-        UTILS_CLAMP(red,   0, 255);
+#if defined FILTERS_C_IMPLEMENTATION
 
     pixels[position] =
-        (uint8_t) blue;
+        (uint8_t) UTILS_CLAMP(pixels[position]     * contrast + brightness, 0.0f, 255.0f);
     pixels[position + 1] =
-        (uint8_t) green;
+        (uint8_t) UTILS_CLAMP(pixels[position + 1] * contrast + brightness, 0.0f, 255.0f);
     pixels[position + 2] =
-        (uint8_t) red;
+        (uint8_t) UTILS_CLAMP(pixels[position + 2] * contrast + brightness, 0.0f, 255.0f);
 
-#elif defined BRIGHTNESS_CONTRAST_X87_ASM_IMPLEMENTATION
+#elif defined FILTERS_X87_ASM_IMPLEMENTATION
 
 #if defined x86_32_CPU
 
@@ -148,7 +119,7 @@ static inline void filters_apply_brightness_contrast(
 #error "Unsupported processor architecture"
 #endif
 
-#elif defined BRIGHTNESS_CONTRAST_SIMD_ASM_IMPLEMENTATION
+#elif defined FILTERS_SIMD_ASM_IMPLEMENTATION
 
 #if defined x86_32_CPU
 
@@ -177,58 +148,41 @@ static inline void filters_apply_sepia(uint8_t *pixels, size_t position)
         0.393, 0.769, 0.189
     };
 
-#if !defined SEPIA_C_IMPLEMENTATION &&     \
-    !defined SEPIA_SIMD_ASM_IMPLEMENTATION
-#define SEPIA_C_IMPLEMENTATION 1
+#if !defined FILTERS_C_IMPLEMENTATION &&     \
+    !defined FILTERS_SIMD_ASM_IMPLEMENTATION
+#define FILTERS_C_IMPLEMENTATION 1
 #endif
 
-#if defined SEPIA_C_IMPLEMENTATION
+#if defined FILTERS_C_IMPLEMENTATION
 
-    uint32_t red,
-             green,
-             blue;
-
-    uint32_t current_green,
-             current_blue;
-
-    current_blue  = pixels[position];
-    current_green = pixels[position + 1];
-
-    blue =
-        (uint32_t) (Sepia_Coefficients[0] * current_blue  +
-                    Sepia_Coefficients[1] * current_green +
-                    Sepia_Coefficients[2] * current_blue);
-
-    green =
-        (uint32_t) (Sepia_Coefficients[3] * current_blue  +
-                    Sepia_Coefficients[4] * current_green +
-                    Sepia_Coefficients[5] * current_blue);
-
-    red =
-        (uint32_t) (Sepia_Coefficients[6] * current_blue  +
-                    Sepia_Coefficients[7] * current_green +
-                    Sepia_Coefficients[8] * current_blue);
-
-    if (blue > 255) {
-        blue = 255;
-    }
-
-    if (green > 255) {
-        green = 255;
-    }
-
-    if (red > 255) {
-        red = 255;
-    }
+    uint32_t blue =
+        pixels[position];
+    uint32_t green =
+        pixels[position + 1];
 
     pixels[position] =
-        (uint8_t) blue;
+        (uint8_t) UTILS_MIN(
+                      Sepia_Coefficients[0] * blue  +
+                      Sepia_Coefficients[1] * green +
+                      Sepia_Coefficients[2] * blue,
+                      255.0f
+                  );
     pixels[position + 1] =
-        (uint8_t) green;
+        (uint8_t) UTILS_MIN(
+                      Sepia_Coefficients[3] * blue  +
+                      Sepia_Coefficients[4] * green +
+                      Sepia_Coefficients[5] * blue,
+                      255.0f
+                  );
     pixels[position + 2] =
-        (uint8_t) red;
+        (uint8_t) UTILS_MIN(
+                      Sepia_Coefficients[6] * blue  +
+                      Sepia_Coefficients[7] * green +
+                      Sepia_Coefficients[8] * blue,
+                      255.0f
+                  );
 
-#elif defined SEPIA_SIMD_ASM_IMPLEMENTATION
+#elif defined FILTERS_SIMD_ASM_IMPLEMENTATION
 
 #if defined x86_32_CPU
 
@@ -254,16 +208,16 @@ static inline void filters_apply_median(
                        size_t position
                    )
 {
-#if !defined MEDIAN_C_IMPLEMENTATION &&     \
-    !defined MEDIAN_SIMD_ASM_IMPLEMENTATION
-#define MEDIAN_C_IMPLEMENTATION 1
+#if !defined FILTERS_C_IMPLEMENTATION &&     \
+    !defined FILTERS_SIMD_ASM_IMPLEMENTATION
+#define FILTERS_C_IMPLEMENTATION 1
 #endif
 
-#if defined MEDIAN_C_IMPLEMENTATION
+#if defined FILTERS_C_IMPLEMENTATION
 
     // TBD
 
-#elif defined MEDIAN_SIMD_ASM_IMPLEMENTATION
+#elif defined FILTERS_SIMD_ASM_IMPLEMENTATION
 
 #if defined x86_32_CPU
 

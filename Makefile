@@ -11,16 +11,16 @@ PROFILE_OUTPUT=/tmp/output.bmp
 all : $(EXECUTABLES)
 
 ips_c_unoptimized : $(SOURCES)
-	$(CC) $(CFLAGS) -DIPS_C_IMPLEMENTATION -O0 -o $@ $<
+	$(CC) $(CFLAGS) -DFILTERS_C_IMPLEMENTATION -O0 -o $@ $<
 
 ips_asm_unoptimized : $(SOURCES)
-	$(CC) $(CFLAGS) -DIPS_X87_ASM_IMPLEMENTATION -O0 -o $@ $<
+	$(CC) $(CFLAGS) -DFILTERS_X87_ASM_IMPLEMENTATION -O0 -o $@ $<
 
 ips_c_optimized : $(SOURCES)
-	$(CC) $(CFLAGS) -DIPS_C_IMPLEMENTATION -O3 -ffast-math -flto -o $@ $<
+	$(CC) $(CFLAGS) -DFILTERS_C_IMPLEMENTATION -O3 -ffast-math -flto -o $@ $<
 
 ips_asm_optimized : $(SOURCES)
-	$(CC) $(CFLAGS) -DIPS_X87_ASM_IMPLEMENTATION -O3 -ffast-math -flto -o $@ $<
+	$(CC) $(CFLAGS) -DFILTERS_SIMD_ASM_IMPLEMENTATION -O3 -ffast-math -flto -o $@ $<
 
 profile : $(EXECUTABLES)
 	for executable in $(EXECUTABLES) ; do ./$$executable $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done

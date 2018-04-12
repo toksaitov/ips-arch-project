@@ -6,35 +6,37 @@
 
 static inline void bmp_init_image_structure(bmp_image *image)
 {
-    if (image) {
+    if (NULL != image) {
         memset(image, 0, sizeof(*image));
     }
 }
 
 static inline void bmp_free_image_structure(bmp_image *image)
 {
-    if (image && image->payload) {
+    if (NULL != image && NULL != image->payload) {
         free(image->payload);
         image->payload = NULL;
     }
 }
 
-static inline void bmp_open_image_headers(FILE *file_descriptor,
-                                          bmp_image *image,
-                                          const char **error_message)
+static inline void bmp_open_image_headers(
+                       FILE *file_descriptor,
+                       bmp_image *image,
+                       const char **error_message
+                   )
 {
     *error_message = NULL;
 
-    if (!image) {
-        if (error_message) {
+    if (NULL == image) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_Image_Structure;
         }
 
         goto end;
     }
 
-    if (!file_descriptor) {
-        if (error_message) {
+    if (NULL == file_descriptor) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_File_Descriptor;
         }
 
@@ -49,7 +51,7 @@ static inline void bmp_open_image_headers(FILE *file_descriptor,
         bmp_header_size + dib_header_size;
 
     if (!fread(&image->file_header, bmp_header_size, 1, file_descriptor)) {
-        if (error_message) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Failed_to_Read_File_Header;
         }
 
@@ -58,7 +60,7 @@ static inline void bmp_open_image_headers(FILE *file_descriptor,
 
     if (image->file_header.signature[0] != BMP_First_Magic_Byte ||
         image->file_header.signature[1] != BMP_Second_Magic_Byte) {
-        if (error_message) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_File_Signature;
         }
 
@@ -66,15 +68,15 @@ static inline void bmp_open_image_headers(FILE *file_descriptor,
     }
 
     if (!fread(&image->dib_header, dib_header_size, 1, file_descriptor)) {
-        if (error_message) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Failed_to_Read_DIB_Header;
         }
 
         goto end;
     }
 
-    if (image->dib_header.bits_per_pixel != 24) {
-        if (error_message) {
+    if (24 != image->dib_header.bits_per_pixel) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Unsupported_Color_Depth;
         }
 
@@ -82,7 +84,7 @@ static inline void bmp_open_image_headers(FILE *file_descriptor,
     }
 
     if (image->file_header.file_size <= total_header_size) {
-        if (error_message) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_Size_Information;
         }
 
@@ -93,22 +95,24 @@ end:
     return;
 }
 
-static inline void bmp_read_image_data(FILE *file_descriptor,
-                                       bmp_image *image,
-                                       const char **error_message)
+static inline void bmp_read_image_data(
+                       FILE *file_descriptor,
+                       bmp_image *image,
+                       const char **error_message
+                   )
 {
     *error_message = NULL;
 
-    if (!image) {
-        if (error_message) {
+    if (NULL == image) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_Image_Structure;
         }
 
         goto end;
     }
 
-    if (!file_descriptor) {
-        if (error_message) {
+    if (NULL == file_descriptor) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_File_Descriptor;
         }
 
@@ -126,8 +130,8 @@ static inline void bmp_read_image_data(FILE *file_descriptor,
         ((size_t) image->file_header.file_size) - total_header_size;
 
     image->payload = (uint8_t *) malloc(payload_size);
-    if (!image->payload) {
-        if (error_message) {
+    if (NULL == image->payload) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Not_Enough_Memory_to_Read;
         }
 
@@ -135,7 +139,7 @@ static inline void bmp_read_image_data(FILE *file_descriptor,
     }
 
     if (!fread(image->payload, payload_size, 1, file_descriptor)) {
-        if (error_message) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Failed_to_Read_Image_Data;
         }
 
@@ -147,24 +151,28 @@ static inline void bmp_read_image_data(FILE *file_descriptor,
             (bmp_header_size + (size_t) image->dib_header.dib_header_size);
 
     if (first_pixel_index >= payload_size) {
-        if (error_message) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_Pixel_Offset_or_DIB_Header_Size;
         }
 
         goto cleanup;
     }
 
-    image->pixels = &image->payload[first_pixel_index];
+    image->pixels =
+        &image->payload[first_pixel_index];
 
-    size_t width = image->dib_header.image_width < 0 ?
-                        (size_t) -image->dib_header.image_width :
-                        (size_t)  image->dib_header.image_width;
+    size_t width =
+        image->dib_header.image_width < 0 ?
+            (size_t) -image->dib_header.image_width :
+            (size_t)  image->dib_header.image_width;
 
-    size_t height = image->dib_header.image_height < 0 ?
-                        (size_t) -image->dib_header.image_height :
-                        (size_t)  image->dib_header.image_height;
+    size_t height =
+        image->dib_header.image_height < 0 ?
+            (size_t) -image->dib_header.image_height :
+            (size_t)  image->dib_header.image_height;
 
-    size_t row_size = width * 3;
+    size_t row_size =
+        width * 3;
 
     size_t padding = (size_t) image->dib_header.bits_per_pixel;
     padding = (padding * width + 31) / 32 * 4 - row_size;
@@ -174,7 +182,7 @@ static inline void bmp_read_image_data(FILE *file_descriptor,
     image->pixel_row_padding     = padding;
 
     if (height * (row_size + padding) > payload_size) {
-        if (error_message) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Failed_to_Calculate_Padding;
         }
 
@@ -185,29 +193,31 @@ end:
     return;
 
 cleanup:
-    if (image->payload)
+    if (NULL != image->payload)
     {
         free(image->payload);
         image->payload = NULL;
     }
 }
 
-static inline void bmp_write_image_headers(FILE *file_descriptor,
-                                           bmp_image *image,
-                                           const char **error_message)
+static inline void bmp_write_image_headers(
+                       FILE *file_descriptor,
+                       bmp_image *image,
+                       const char **error_message
+                   )
 {
     *error_message = NULL;
 
-    if (!image) {
-        if (error_message) {
+    if (NULL == image) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_Image_Structure;
         }
 
         goto end;
     }
 
-    if (!file_descriptor) {
-        if (error_message) {
+    if (NULL == file_descriptor) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_File_Descriptor;
         }
 
@@ -218,7 +228,7 @@ static inline void bmp_write_image_headers(FILE *file_descriptor,
         sizeof(image->file_header);
 
     if (!fwrite(&image->file_header, bmp_header_size, 1, file_descriptor)) {
-        if (error_message) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Failed_to_Write_File_Header;
         }
 
@@ -229,7 +239,7 @@ static inline void bmp_write_image_headers(FILE *file_descriptor,
         sizeof(image->dib_header);
 
     if (!fwrite(&image->dib_header, dib_header_size, 1, file_descriptor)) {
-        if (error_message) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Failed_to_Write_DIB_Header;
         }
 
@@ -240,22 +250,24 @@ end:
     return;
 }
 
-static inline void bmp_write_image_data(FILE *file_descriptor,
-                                        bmp_image *image,
-                                        const char **error_message)
+static inline void bmp_write_image_data(
+                       FILE *file_descriptor,
+                       bmp_image *image,
+                       const char **error_message
+                   )
 {
     *error_message = NULL;
 
-    if (!image) {
-        if (error_message) {
+    if (NULL == image) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_Image_Structure;
         }
 
         goto end;
     }
 
-    if (!file_descriptor) {
-        if (error_message) {
+    if (NULL == file_descriptor) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Invalid_File_Descriptor;
         }
 
@@ -273,7 +285,7 @@ static inline void bmp_write_image_data(FILE *file_descriptor,
         ((size_t) image->file_header.file_size) - total_header_size;
 
     if (!fwrite(image->payload, payload_size, 1, file_descriptor)) {
-        if (error_message) {
+        if (NULL != error_message) {
             *error_message = BMP_Error_Failed_to_Write_Image_Data;
         }
 

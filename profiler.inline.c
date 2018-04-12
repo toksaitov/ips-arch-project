@@ -11,7 +11,7 @@ static const long Profiler_Nanoseconds_in_Seconds = 1000000000;
 
 static inline void profiler_init_time(struct timespec *time)
 {
-    if (time) {
+    if (NULL != time) {
         time->tv_sec  = 0;
         time->tv_nsec = 0;
     }
@@ -34,11 +34,13 @@ static inline void profiler_get_time(struct timespec *result)
 #endif
 }
 
-static inline void profiler_get_delta_time(struct timespec *start_time,
-                                           struct timespec *end_time,
-                                           struct timespec *result)
+static inline void profiler_get_delta_time(
+                       struct timespec *start_time,
+                       struct timespec *end_time,
+                       struct timespec *result
+                   )
 {
-    if ((end_time->tv_nsec - start_time->tv_nsec) < 0) {
+    if (0 > (end_time->tv_nsec - start_time->tv_nsec)) {
         result->tv_sec  = end_time->tv_sec - start_time->tv_sec - 1;
         result->tv_nsec = Profiler_Nanoseconds_in_Seconds +
                             end_time->tv_nsec - start_time->tv_nsec;
@@ -48,9 +50,11 @@ static inline void profiler_get_delta_time(struct timespec *start_time,
     }
 }
 
-static inline void profiler_add_time(struct timespec *start_time,
-                                     struct timespec *end_time,
-                                     struct timespec *result)
+static inline void profiler_add_time(
+                       struct timespec *start_time,
+                       struct timespec *end_time,
+                       struct timespec *result
+                   )
 {
     long nanoseconds = start_time->tv_nsec + end_time->tv_nsec;
     if (nanoseconds > Profiler_Nanoseconds_in_Seconds) {
@@ -62,8 +66,11 @@ static inline void profiler_add_time(struct timespec *start_time,
     }
 }
 
-static inline void profiler_divide_time(struct timespec *time, double value,
-                                        struct timespec *result)
+static inline void profiler_divide_time(
+                       struct timespec *time,
+                       double value,
+                       struct timespec *result
+                   )
 {
     double total_nanoseconds =
         (Profiler_Nanoseconds_in_Seconds * (double) time->tv_sec + (double) time->tv_nsec) / value;

@@ -9,11 +9,13 @@
 
 #define UTILS_MIN(A,B) (((A)<(B))?(A):(B))
 #define UTILS_MAX(A,B) (((A)>(B))?(A):(B))
-#define UTILS_CLAMP(X,MIN,MAX) (IPS_MIN(IPS_MAX((X),(MIN)),(MAX)))
+#define UTILS_CLAMP(X,MIN,MAX) (UTILS_MIN(UTILS_MAX((X),(MIN)),(MAX)))
 #define UTILS_NORMALIZE(X,MIN,MAX) (((X)-(MIN))/((MAX)-(MIN)));
 #define UTILS_COUNT_OF(X) ((sizeof(X)/sizeof(0[X])) / ((size_t)(!(sizeof(X) % sizeof(0[X])))))
 
-int utils_get_number_of_cpu_cores(void);
+static inline int utils_get_number_of_cpu_cores(void);
+
+#include "utils.inline.c"
 
 #endif /* UTILS_H */
 
