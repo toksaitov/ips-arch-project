@@ -5,7 +5,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-typedef struct _filters_brightness_contrast_data {
+typedef struct _filters_brightness_contrast_data
+{
     size_t linear_position, row_padding;
     size_t width, height;
     uint8_t *pixels;
@@ -14,7 +15,8 @@ typedef struct _filters_brightness_contrast_data {
     volatile bool *barrier_sense;
 } filters_brightness_contrast_data_t;
 
-typedef struct _filters_sepia_data {
+typedef struct _filters_sepia_data
+{
     size_t linear_position, row_padding;
     size_t width, height;
     uint8_t *pixels;
@@ -22,7 +24,8 @@ typedef struct _filters_sepia_data {
     volatile bool *barrier_sense;
 } filters_sepia_data_t;
 
-typedef struct _filters_median_data {
+typedef struct _filters_median_data
+{
     size_t linear_position, row_padding;
     size_t width, height;
     uint8_t *pixels;

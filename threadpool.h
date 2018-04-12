@@ -6,7 +6,8 @@
 
 #include "synchronized_queue.h"
 
-typedef struct _threadpool {
+typedef struct _threadpool
+{
     synchronized_queue_t *queue;
 
     pthread_t *threads;

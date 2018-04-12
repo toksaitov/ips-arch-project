@@ -6,7 +6,8 @@
 
 #include "queue.h"
 
-typedef struct _synchronized_queue {
+typedef struct _synchronized_queue
+{
     pthread_mutex_t access_mutex;
     pthread_cond_t not_empty_condition;
     queue_t implementation;
