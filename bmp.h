@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdio.h>
 
 static const char *BMP_Error_Invalid_File_Descriptor =
                     "Invalid file descriptor",
