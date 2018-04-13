@@ -46,7 +46,9 @@ ips_asm_optimized : ${SOURCES} $(HEADERS)
 	$(CC) $(CFLAGS) -DFILTERS_SIMD_ASM_IMPLEMENTATION -O3 -ffast-math -flto -o $@ $<
 
 profile : $(EXECUTABLES)
-	for executable in $(EXECUTABLES) ; do ./$$executable $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
+	for executable in $(EXECUTABLES) ; do ./$$executable brightness-contrast 10 2 $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
+	for executable in $(EXECUTABLES) ; do ./$$executable sepia $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
+	for executable in $(EXECUTABLES) ; do ./$$executable median $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
 
 .PHONY: clean
 clean :
