@@ -17,7 +17,7 @@
 
 static size_t utils_get_number_of_cpu_cores(void);
 
-#include "utils.inline.c"
+#include "utils.impl.h.c"
 
 #endif /* UTILS_H */
 

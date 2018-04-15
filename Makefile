@@ -7,23 +7,23 @@ EXECUTABLES = ips_c_unoptimized   \
               ips_asm_optimized
 
 HEADERS = bmp.h                       \
-          bmp.inline.c                \
+          bmp.impl.h.c                \
           threadpool.h                \
-          threadpool.inline.c         \
+          threadpool.impl.h.c         \
           queue.h                     \
-          queue.inline.c              \
+          queue.impl.h.c              \
           synchronized_queue.h        \
-          synchronized_queue.inline.c \
+          synchronized_queue.impl.h.c \
           work_item.h                 \
-          work_item.inline.c          \
+          work_item.impl.h.c          \
           filters.h                   \
-          filters.inline.c            \
+          filters.impl.h.c            \
           filters_threading.h         \
-          filters_threading.inline.c  \
+          filters_threading.impl.h.c  \
           utils.h                     \
-          utils.inline.c              \
+          utils.impl.h.c              \
           profiler.h                  \
-          profiler.inline.c
+          profiler.impl.h.c
 
 SOURCES = ips.c
 

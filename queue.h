@@ -57,7 +57,7 @@ static void *queue_deque(queue_t *queue);
 
 static void *queue_pop(queue_t *queue);
 
-#include "queue.inline.c"
+#include "queue.impl.h.c"
 
 #endif // QUEUE_H
 

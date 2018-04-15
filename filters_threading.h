@@ -108,7 +108,7 @@ static void filters_median_processing_task(
                 void (*result_callback)(void *result)
             );
 
-#include "filters_threading.inline.c"
+#include "filters_threading.impl.h.c"
 
 #endif /* FILTERS_THREADING_H */
 

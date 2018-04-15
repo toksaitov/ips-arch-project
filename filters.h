@@ -4,6 +4,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#define FILTERS_BRIGHTNESS_CONTRAST_ID 0
+#define FILTERS_SEPIA_ID               1
+#define FILTERS_MEDIAN_ID              2
+
 #define FILTERS_MEDIAN_WINDOW_SIZE 20
 
 static inline void filters_apply_brightness_contrast(
@@ -29,7 +33,7 @@ static inline void filters_apply_median(
                        size_t padding
                    );
 
-#include "filters.inline.c"
+#include "filters.impl.h.c"
 
 #endif /* FILTERS_H */
 

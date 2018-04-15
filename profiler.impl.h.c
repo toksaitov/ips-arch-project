@@ -73,7 +73,8 @@ static inline void profiler_divide_time(
                    )
 {
     double total_nanoseconds =
-        (Profiler_Nanoseconds_in_Seconds * (double) time->tv_sec + (double) time->tv_nsec) / value;
+        (Profiler_Nanoseconds_in_Seconds * (double) time->tv_sec + (double) time->tv_nsec) /
+            value;
 
     double seconds = floor(total_nanoseconds / Profiler_Nanoseconds_in_Seconds),
            nanoseconds = fmod(total_nanoseconds, Profiler_Nanoseconds_in_Seconds);

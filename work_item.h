@@ -16,7 +16,7 @@ static inline work_item_t *work_item_create(
 
 static inline void work_item_destroy(work_item_t *work_item);
 
-#include "work_item.inline.c"
+#include "work_item.impl.h.c"
 
 #endif // WORK_ITEM_H
 

@@ -30,7 +30,7 @@ static inline void profiler_divide_time(
                        struct timespec *result
                    );
 
-#include "profiler.inline.c"
+#include "profiler.impl.h.c"
 
 #endif
 

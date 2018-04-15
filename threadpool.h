@@ -29,7 +29,7 @@ static inline void threadpool_enqueue_task(
                        void (*result_callback)(void *result)
                    );
 
-#include "threadpool.inline.c"
+#include "threadpool.impl.h.c"
 
 #endif // THREADPOOL_H
 

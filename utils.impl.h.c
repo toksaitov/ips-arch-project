@@ -20,7 +20,8 @@ static size_t utils_get_number_of_cpu_cores()
     SYSTEM_INFO info;
     GetSystemInfo(&info);
 
-    result = (int) info.dwNumberOfProcessors;
+    result =
+        (int) info.dwNumberOfProcessors;
 #elif __APPLE__
     int nm[2];
 
@@ -37,9 +38,11 @@ static size_t utils_get_number_of_cpu_cores()
         sysctl(nm, 2, &count, &length, NULL, 0);
     }
 
-    result = (int) count;
+    result =
+        (int) count;
 #else
-    result = (int) sysconf(_SC_NPROCESSORS_ONLN);
+    result =
+        (int) sysconf(_SC_NPROCESSORS_ONLN);
 #endif
 
     if (result < 1) {

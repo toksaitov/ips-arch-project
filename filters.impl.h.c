@@ -227,8 +227,6 @@ static inline void filters_apply_median(
 #define FILTERS_C_IMPLEMENTATION 1
 #endif
 
-#if defined FILTERS_C_IMPLEMENTATION
-
     static const size_t window_width =
         FILTERS_MEDIAN_WINDOW_SIZE % 2 == 0 ?
             FILTERS_MEDIAN_WINDOW_SIZE + 1 :
@@ -253,10 +251,6 @@ static inline void filters_apply_median(
                 ssize_t adjusted_y =
                     (ssize_t) y - (ssize_t) window_center_shift_y + (ssize_t) wy;
 
-                //printf("x, y: %zu %zu\n", x, y);
-                //printf("wx, wy: %zu %zu\n", wx, wy);
-                //printf("wcx, wcy: %zu %zu\n", window_center_shift_x, window_center_shift_y);
-                //printf("ax, ay: %zd %zd\n", adjusted_x, adjusted_y);
                 window[wy * window_width + wx] =
                     bmp_sample_pixel(
                         source_pixels,
@@ -266,19 +260,12 @@ static inline void filters_apply_median(
                         height,
                         padding
                     )[channel];
-                //printf("w: %zu\n\n", (size_t) window[wy * window_width + wx]);
             }
         }
 
-        qsort(window, window_size, sizeof(uint8_t), _filters_compare_bytes);
+#if defined FILTERS_C_IMPLEMENTATION
 
-        uint8_t median =
-            window_size % 2 == 0 ?
-                (uint8_t) ((window[window_center - 1] + window[window_center]) * 0.5f) :
-                window[window_center];
-        destination_pixels[position + channel] =
-            median;
-    }
+        qsort(window, window_size, sizeof(uint8_t), _filters_compare_bytes);
 
 #elif defined FILTERS_SIMD_ASM_IMPLEMENTATION
 
@@ -299,5 +286,13 @@ static inline void filters_apply_median(
 #endif
 
 #endif
+
+        uint8_t median =
+            window_size % 2 == 0 ?
+                (uint8_t) ((window[window_center - 1] + window[window_center]) * 0.5f) :
+                window[window_center];
+        destination_pixels[position + channel] =
+            median;
+    }
 }
 

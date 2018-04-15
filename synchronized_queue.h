@@ -29,7 +29,7 @@ static synchronized_queue_t *synchronized_queue_enqueue(synchronized_queue_t *qu
 
 static void *synchronized_queue_pop(synchronized_queue_t *queue);
 
-#include "synchronized_queue.inline.c"
+#include "synchronized_queue.impl.h.c"
 
 #endif // SYNCHRONIZED_QUEUE_H
 

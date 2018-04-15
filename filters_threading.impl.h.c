@@ -17,7 +17,7 @@ static inline filters_brightness_contrast_data_t *filters_brightness_contrast_da
                                                       volatile bool *barrier_sense
                                                   ) {
     filters_brightness_contrast_data_t *data =
-        (filters_brightness_contrast_data_t *) malloc(sizeof(*data));
+        malloc(sizeof(*data));
 
     if (NULL == data) {
         return data;
@@ -70,7 +70,7 @@ static inline filters_sepia_data_t *filters_sepia_data_create(
                                         volatile bool *barrier_sense
                                    ) {
     filters_sepia_data_t *data =
-        (filters_sepia_data_t *) malloc(sizeof(*data));
+        malloc(sizeof(*data));
 
     if (NULL == data) {
         return data;
@@ -122,7 +122,7 @@ static inline filters_median_data_t *filters_median_data_create(
                                          volatile bool *barrier_sense
                                      ) {
     filters_median_data_t *data =
-        (filters_median_data_t *) malloc(sizeof(*data));
+        malloc(sizeof(*data));
 
     if (NULL == data) {
         return data;
@@ -171,7 +171,7 @@ static void filters_brightness_contrast_processing_task(
             )
 {
     filters_brightness_contrast_data_t *data =
-        (filters_brightness_contrast_data_t *) task_data;
+        task_data;
 
     size_t linear_position =
         data->linear_position;
@@ -219,7 +219,7 @@ static void filters_sepia_processing_task(
             )
 {
     filters_sepia_data_t *data =
-        (filters_sepia_data_t *) task_data;
+        task_data;
 
     size_t linear_position =
         data->linear_position;
@@ -260,7 +260,7 @@ static void filters_median_processing_task(
             )
 {
     filters_median_data_t *data =
-        (filters_median_data_t *) task_data;
+        task_data;
 
     size_t linear_position =
         data->linear_position;

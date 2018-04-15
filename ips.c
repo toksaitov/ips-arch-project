@@ -40,6 +40,11 @@ int main(int argc, char *argv[])
     int result =
         EXIT_FAILURE;
 
+    int filter_id =
+        -1;
+    void (*task)(void *task_data, void (*result_callback)(void *result)) =
+        NULL;
+
     char *source_file_name =
         NULL;
     char *destination_file_name =
@@ -49,8 +54,6 @@ int main(int argc, char *argv[])
         0.0f;
     float contrast =
         0.0f;
-    void (*task)(void *task_data, void (*result_callback)(void *result)) =
-        NULL;
 
     if (3 > argc) {
         fprintf(
@@ -79,6 +82,8 @@ int main(int argc, char *argv[])
             return result;
         }
 
+        filter_id =
+            FILTERS_BRIGHTNESS_CONTRAST_ID;
         task =
             filters_brightness_contrast_processing_task;
         brightness =
@@ -94,6 +99,8 @@ int main(int argc, char *argv[])
                         IPS_Sepia_Filter_Name,
                         UTILS_COUNT_OF(IPS_Sepia_Filter_Name)
                     )) {
+        filter_id =
+            FILTERS_SEPIA_ID;
         task =
             filters_sepia_processing_task;
         source_file_name =
@@ -105,6 +112,8 @@ int main(int argc, char *argv[])
                         IPS_Median_Filter_Name,
                         UTILS_COUNT_OF(IPS_Median_Filter_Name)
                     )) {
+        filter_id =
+            FILTERS_MEDIAN_ID;
         task =
             filters_median_processing_task;
         source_file_name =
@@ -220,7 +229,7 @@ int main(int argc, char *argv[])
             image.pixels;
 
         uint8_t *original_pixels = NULL;
-        if (task == filters_median_processing_task) {
+        if (filter_id == FILTERS_MEDIAN_ID) {
             original_pixels = (uint8_t *) malloc(image.image_size);
             if (NULL == original_pixels) {
                 fprintf(
@@ -241,6 +250,10 @@ int main(int argc, char *argv[])
             image.absolute_image_height;
         size_t row_padding =
             image.pixel_row_padding;
+        size_t rows_per_thread =
+            height / pool_size;
+        size_t linear_position_step =
+            rows_per_thread * (width * 3 + row_padding);
 
 PROFILER_START(1)
         rows_left =
@@ -248,41 +261,60 @@ PROFILER_START(1)
         barrier_sense =
             false;
 
-        for (size_t y = 0, linear_position = 0; y < height; ++y, linear_position += (width * 3 + row_padding)) {
-            void *task_data = NULL;
-            if (task == filters_brightness_contrast_processing_task) {
-                task_data =
-                    (filters_brightness_contrast_data_t *) filters_brightness_contrast_data_create(
-                                                               linear_position, row_padding,
-                                                               0, y,
-                                                               width, 1,
-                                                               pixels,
-                                                               brightness, contrast,
-                                                               &rows_left,
-                                                               &barrier_sense
-                                                           );
-            } else if (task == filters_sepia_processing_task) {
-                task_data =
-                    (filters_sepia_data_t *) filters_sepia_data_create(
-                                                 linear_position, row_padding,
-                                                 0, y,
-                                                 width, 1,
-                                                 pixels,
-                                                 &rows_left,
-                                                 &barrier_sense
-                                             );
-            } else if (task == filters_median_processing_task) {
-                task_data =
-                    (filters_median_data_t *) filters_median_data_create(
-                                                  linear_position, row_padding,
-                                                  0, y,
-                                                  width, 1,
-                                                  width, height,
-                                                  original_pixels,
-                                                  pixels,
-                                                  &rows_left,
-                                                  &barrier_sense
-                                              );
+        for (
+            size_t y = 0, linear_position = 0;
+            y < height;
+            y += rows_per_thread, linear_position += linear_position_step
+        ) {
+            size_t rows_to_process =
+                y + rows_per_thread > height ?
+                    (height - y) :
+                     rows_per_thread;
+
+            void *task_data;
+            switch (filter_id) {
+                case FILTERS_BRIGHTNESS_CONTRAST_ID:
+                    task_data =
+                        filters_brightness_contrast_data_create(
+                            linear_position, row_padding,
+                            0, y,
+                            width,
+                            rows_to_process,
+                            pixels,
+                            brightness, contrast,
+                            &rows_left,
+                            &barrier_sense
+                        );
+                    break;
+                case FILTERS_SEPIA_ID:
+                    task_data =
+                        filters_sepia_data_create(
+                            linear_position, row_padding,
+                            0, y,
+                            width,
+                            rows_to_process,
+                            pixels,
+                            &rows_left,
+                            &barrier_sense
+                        );
+                    break;
+                case FILTERS_MEDIAN_ID:
+                    task_data =
+                        filters_median_data_create(
+                            linear_position, row_padding,
+                            0, y,
+                            width,
+                            rows_to_process,
+                            width, height,
+                            original_pixels,
+                            pixels,
+                            &rows_left,
+                            &barrier_sense
+                        );
+                    break;
+                default:
+                    task_data =
+                        NULL;
             }
 
             if (NULL != task_data) {

@@ -119,7 +119,7 @@ static inline uint8_t *bmp_sample_pixel(
                            size_t row_padding
                        );
 
-#include "bmp.inline.c"
+#include "bmp.impl.h.c"
 
 #endif /* BMP_H */
 

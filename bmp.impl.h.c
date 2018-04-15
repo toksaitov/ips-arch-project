@@ -312,8 +312,10 @@ static inline uint8_t *bmp_sample_pixel(
                            size_t row_padding
                        )
 {
-    size_t ux = (size_t) (UTILS_CLAMP(x, 0, (ssize_t) absolute_image_width - 1));
-    size_t uy = (size_t) (UTILS_CLAMP(y, 0, (ssize_t) absolute_image_height - 1));
+    size_t ux =
+        (size_t) (UTILS_CLAMP(x, 0, (ssize_t) absolute_image_width - 1));
+    size_t uy =
+        (size_t) (UTILS_CLAMP(y, 0, (ssize_t) absolute_image_height - 1));
 
     return &pixels[uy * (absolute_image_width * 3 + row_padding) + ux * 3];
 }
