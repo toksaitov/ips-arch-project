@@ -1,4 +1,5 @@
 #include "bmp.h"
+#include "utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -129,6 +130,7 @@ static void bmp_read_image_data(
     size_t payload_size =
         ((size_t) image->file_header.file_size) - total_header_size;
 
+    image->payload_size = payload_size;
     image->payload = (uint8_t *) malloc(payload_size);
     if (NULL == image->payload) {
         if (NULL != error_message) {
@@ -177,11 +179,16 @@ static void bmp_read_image_data(
     size_t padding = (size_t) image->dib_header.bits_per_pixel;
     padding = (padding * width + 31) / 32 * 4 - row_size;
 
-    image->absolute_image_width  = width;
-    image->absolute_image_height = height;
-    image->pixel_row_padding     = padding;
+    image->absolute_image_width  =
+        width;
+    image->absolute_image_height =
+        height;
+    image->pixel_row_padding =
+        padding;
+    image->image_size =
+        height * (row_size + padding);
 
-    if (height * (row_size + padding) > payload_size) {
+    if (image->image_size > payload_size) {
         if (NULL != error_message) {
             *error_message = BMP_Error_Failed_to_Calculate_Padding;
         }
@@ -294,5 +301,20 @@ static void bmp_write_image_data(
 
 end:
     return;
+}
+
+static inline uint8_t *bmp_sample_pixel(
+                           uint8_t *pixels,
+                           ssize_t x,
+                           ssize_t y,
+                           size_t absolute_image_width,
+                           size_t absolute_image_height,
+                           size_t row_padding
+                       )
+{
+    size_t ux = (size_t) (UTILS_CLAMP(x, 0, (ssize_t) absolute_image_width - 1));
+    size_t uy = (size_t) (UTILS_CLAMP(y, 0, (ssize_t) absolute_image_height - 1));
+
+    return &pixels[uy * (absolute_image_width * 3 + row_padding) + ux * 3];
 }
 

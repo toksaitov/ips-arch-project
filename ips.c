@@ -31,7 +31,9 @@ static const char IPS_Usage[] =
                   IPS_Error_Failed_to_Process_Image[] =
                     "Error processing the image",
                   IPS_Error_Failed_to_Create_Threadpool[] =
-                    "Error trying to create a threadpool";
+                    "Error trying to create a threadpool",
+                  IPS_Error_Failed_to_Duplicate_the_Image[] =
+                    "Error duplicating the image";
 
 int main(int argc, char *argv[])
 {
@@ -78,13 +80,13 @@ int main(int argc, char *argv[])
         }
 
         task =
-            filters_brightness_contrast_filter_task;
+            filters_brightness_contrast_processing_task;
         brightness =
             strtof(argv[2], NULL);
         contrast =
             strtof(argv[3], NULL);
         source_file_name =
-            argv[4],
+            argv[4];
         destination_file_name =
             argv[5];
     } else if (0 == strncmp(
@@ -93,9 +95,9 @@ int main(int argc, char *argv[])
                         UTILS_COUNT_OF(IPS_Sepia_Filter_Name)
                     )) {
         task =
-            filters_sepia_filter_task;
+            filters_sepia_processing_task;
         source_file_name =
-            argv[2],
+            argv[2];
         destination_file_name =
             argv[3];
     } else if (0 == strncmp(
@@ -104,9 +106,9 @@ int main(int argc, char *argv[])
                         UTILS_COUNT_OF(IPS_Median_Filter_Name)
                     )) {
         task =
-            filters_brightness_contrast_filter_task;
+            filters_median_processing_task;
         source_file_name =
-            argv[2],
+            argv[2];
         destination_file_name =
             argv[3];
     } else {
@@ -210,12 +212,28 @@ int main(int argc, char *argv[])
 
     /* Main Image Processing Loop */
     {
-        static volatile size_t rows_left_shared =
+        static volatile size_t rows_left =
             0;
         static volatile bool barrier_sense =
             false;
         uint8_t *pixels =
             image.pixels;
+
+        uint8_t *original_pixels = NULL;
+        if (task == filters_median_processing_task) {
+            original_pixels = (uint8_t *) malloc(image.image_size);
+            if (NULL == original_pixels) {
+                fprintf(
+                    stderr,
+                    "%s.\n",
+                    IPS_Error_Failed_to_Duplicate_the_Image
+                );
+
+                goto cleanup;
+            }
+
+            memcpy(original_pixels, pixels, image.image_size);
+        }
 
         size_t width =
             image.absolute_image_width;
@@ -225,49 +243,56 @@ int main(int argc, char *argv[])
             image.pixel_row_padding;
 
 PROFILER_START(1)
-        rows_left_shared =
+        rows_left =
             height;
         barrier_sense =
             false;
 
         for (size_t y = 0, linear_position = 0; y < height; ++y, linear_position += (width * 3 + row_padding)) {
-            void *task_data;
-            if (task == filters_brightness_contrast_filter_task) {
+            void *task_data = NULL;
+            if (task == filters_brightness_contrast_processing_task) {
                 task_data =
                     (filters_brightness_contrast_data_t *) filters_brightness_contrast_data_create(
                                                                linear_position, row_padding,
+                                                               0, y,
                                                                width, 1,
                                                                pixels,
                                                                brightness, contrast,
-                                                               &rows_left_shared,
+                                                               &rows_left,
                                                                &barrier_sense
                                                            );
-            } else if (task == filters_sepia_filter_task) {
+            } else if (task == filters_sepia_processing_task) {
                 task_data =
                     (filters_sepia_data_t *) filters_sepia_data_create(
                                                  linear_position, row_padding,
+                                                 0, y,
                                                  width, 1,
                                                  pixels,
-                                                 &rows_left_shared,
+                                                 &rows_left,
                                                  &barrier_sense
                                              );
-            } else {
+            } else if (task == filters_median_processing_task) {
                 task_data =
                     (filters_median_data_t *) filters_median_data_create(
                                                   linear_position, row_padding,
+                                                  0, y,
                                                   width, 1,
+                                                  width, height,
+                                                  original_pixels,
                                                   pixels,
-                                                  &rows_left_shared,
+                                                  &rows_left,
                                                   &barrier_sense
                                               );
             }
 
-            threadpool_enqueue_task(
-                threadpool,
-                task,
-                task_data,
-                NULL
-            );
+            if (NULL != task_data) {
+                threadpool_enqueue_task(
+                    threadpool,
+                    task,
+                    task_data,
+                    NULL
+                );
+            }
         }
 
         while (!barrier_sense) { }

@@ -72,13 +72,15 @@ typedef struct _bmp_image
 {
     bmp_file_header file_header;
     bmp_dib_header dib_header;
+    size_t payload_size;
     uint8_t *payload;
 
     /* Convenience Variables */
     uint8_t *pixels;                /* start of pixel array in payload  */
     size_t absolute_image_width;    /* abs(dib_header.image_width)      */
     size_t absolute_image_height;   /* abs(dib_header.image_height)     */
-    size_t pixel_row_padding;       /* padding after each row of pixels */
+    size_t pixel_row_padding;       /* the padding after each row of pixels      */
+    size_t image_size;              /* the total size of the image part in bytes */
 } bmp_image;
 
 static inline void bmp_init_image_structure(bmp_image *image);
@@ -107,6 +109,15 @@ static void bmp_write_image_data(
                 bmp_image *image,
                 const char **error_message
             );
+
+static inline uint8_t *bmp_sample_pixel(
+                           uint8_t *pixels,
+                           ssize_t x,
+                           ssize_t y,
+                           size_t absolute_image_width,
+                           size_t absolute_image_height,
+                           size_t row_padding
+                       );
 
 #include "bmp.inline.c"
 

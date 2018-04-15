@@ -145,10 +145,10 @@ static inline void filters_apply_sepia(
                        size_t position
                    )
 {
-    static const double Sepia_Coefficients[] = {
-        0.272, 0.534, 0.131,
-        0.349, 0.686, 0.168,
-        0.393, 0.769, 0.189
+    static const float Sepia_Coefficients[] = {
+        0.272f, 0.534f, 0.131f,
+        0.349f, 0.686f, 0.168f,
+        0.393f, 0.769f, 0.189f
     };
 
 #if !defined FILTERS_C_IMPLEMENTATION &&     \
@@ -206,9 +206,20 @@ static inline void filters_apply_sepia(
 #endif
 }
 
+static int _filters_compare_bytes(const void *a, const void *b)
+{
+    return *((const uint8_t *) a) - *((const uint8_t *) b);
+}
+
 static inline void filters_apply_median(
-                       uint8_t *pixels,
-                       size_t position
+                       uint8_t *source_pixels,
+                       uint8_t *destination_pixels,
+                       size_t position,
+                       size_t x,
+                       size_t y,
+                       size_t width,
+                       size_t height,
+                       size_t padding
                    )
 {
 #if !defined FILTERS_C_IMPLEMENTATION &&     \
@@ -218,7 +229,56 @@ static inline void filters_apply_median(
 
 #if defined FILTERS_C_IMPLEMENTATION
 
-    // TBD
+    static const size_t window_width =
+        FILTERS_MEDIAN_WINDOW_SIZE % 2 == 0 ?
+            FILTERS_MEDIAN_WINDOW_SIZE + 1 :
+            FILTERS_MEDIAN_WINDOW_SIZE;
+    static const size_t window_height =
+        window_width;
+    static const size_t window_center_shift_x =
+        window_width / 2;
+    static const size_t window_center_shift_y =
+        window_height / 2;
+    static const size_t window_size =
+        window_width * window_height;
+    static const size_t window_center =
+        window_size / 2;
+
+    uint8_t window[window_size];
+    for (size_t channel = 0; channel < 3; ++channel) {
+        for (size_t wy = 0; wy < window_height; ++wy) {
+            for (size_t wx = 0; wx < window_width; ++wx) {
+                ssize_t adjusted_x =
+                    (ssize_t) x - (ssize_t) window_center_shift_x + (ssize_t) wx;
+                ssize_t adjusted_y =
+                    (ssize_t) y - (ssize_t) window_center_shift_y + (ssize_t) wy;
+
+                //printf("x, y: %zu %zu\n", x, y);
+                //printf("wx, wy: %zu %zu\n", wx, wy);
+                //printf("wcx, wcy: %zu %zu\n", window_center_shift_x, window_center_shift_y);
+                //printf("ax, ay: %zd %zd\n", adjusted_x, adjusted_y);
+                window[wy * window_width + wx] =
+                    bmp_sample_pixel(
+                        source_pixels,
+                        adjusted_x,
+                        adjusted_y,
+                        width,
+                        height,
+                        padding
+                    )[channel];
+                //printf("w: %zu\n\n", (size_t) window[wy * window_width + wx]);
+            }
+        }
+
+        qsort(window, window_size, sizeof(uint8_t), _filters_compare_bytes);
+
+        uint8_t median =
+            window_size % 2 == 0 ?
+                (uint8_t) ((window[window_center - 1] + window[window_center]) * 0.5f) :
+                window[window_center];
+        destination_pixels[position + channel] =
+            median;
+    }
 
 #elif defined FILTERS_SIMD_ASM_IMPLEMENTATION
 
