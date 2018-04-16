@@ -206,7 +206,7 @@ static inline void filters_apply_sepia(
 #endif
 }
 
-static int _filters_compare_bytes(const void *a, const void *b)
+static int _filters_compare_color_channels(const void *a, const void *b)
 {
     return *((const uint8_t *) a) - *((const uint8_t *) b);
 }
@@ -265,7 +265,7 @@ static inline void filters_apply_median(
 
 #if defined FILTERS_C_IMPLEMENTATION
 
-        qsort(window, window_size, sizeof(uint8_t), _filters_compare_bytes);
+        qsort(window, window_size, sizeof(*window), _filters_compare_color_channels);
 
 #elif defined FILTERS_SIMD_ASM_IMPLEMENTATION
 
