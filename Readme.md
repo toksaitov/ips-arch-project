@@ -177,6 +177,57 @@ channel values to get a full grade.
 2. If everything works, and you got a speed-up, extend the
    `Readme_Student_Part_4.md` file with information about your extra work.
 
+## Compilation and Usage
+
+1. Get access to a Linux machine running on a Skylake CPU.
+
+2. Ensure that the machine has `git`, `make`, `gcc`, and `gdb` installed.
+
+3. Get the sources.
+
+```bash
+git clone https://github.com/toksaitov/ips-arch-project.git
+```
+
+4. Go inside the project's directory.
+
+```bash
+cd ips-arch-project
+```
+
+5. Compile all the variants of the image processing program.
+
+```bash
+make
+```
+
+6. Run some versions of the compiled program (C, x87 ASM, SIMD ASM) without arguments. The executables will print the usage message.
+
+```bash
+./ips_c_unoptimized
+```
+
+7. Use the system to process some 24-bit BMP images. Try not to use large images with the median filter.
+
+```bash
+./ips_c_unoptimized brightness-contrast -100 2 test/test_image.bmp test/test_image_result_1.bmp
+./ips_c_unoptimized sepia test/test_image.bmp test/test_image_result_2.bmp
+./ips_c_unoptimized median test/test_image_small.bmp test/test_image_result_3.bmp
+```
+
+8. Try out the profile rule from the `Makefile`. It will compile all the programs with the profiling code enabled. Then it
+   will run them in turnes on the test images to compare the differences in timing. Note, that you can increase the number of
+   profiling passes in `ips.c` to avoid the problem of cold CPU caches.
+
+```bash
+make profile
+```
+
+9. Start working on the x87 and SIMD optimized assembly versions in the `filters.impl.h.c` file. You can either use the GCC inline
+   assembly or create a separate `.s` file with exported (`.global`) labels to jump to or call from the C source file. Do not forget
+   to add your custom `.s` files to the `Makefile` to assemble and link with the final executables. For inline assembly you do not
+   need to modify the build system. Just call `make` to recompile all the versions.
+
 ## Deliverables
 
 * Every file and directory from the template, including your own sources, zipped
