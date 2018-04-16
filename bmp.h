@@ -1,6 +1,7 @@
 #ifndef BMP_H
 #define BMP_H
 
+#include <sys/types.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>

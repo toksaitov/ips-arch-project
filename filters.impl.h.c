@@ -227,19 +227,19 @@ static inline void filters_apply_median(
 #define FILTERS_C_IMPLEMENTATION 1
 #endif
 
-    static const size_t window_width =
+    const size_t window_width =
         FILTERS_MEDIAN_WINDOW_SIZE % 2 == 0 ?
             FILTERS_MEDIAN_WINDOW_SIZE + 1 :
             FILTERS_MEDIAN_WINDOW_SIZE;
-    static const size_t window_height =
+    const size_t window_height =
         window_width;
-    static const size_t window_center_shift_x =
+    const size_t window_center_shift_x =
         window_width / 2;
-    static const size_t window_center_shift_y =
+    const size_t window_center_shift_y =
         window_height / 2;
-    static const size_t window_size =
+    const size_t window_size =
         window_width * window_height;
-    static const size_t window_center =
+    const size_t window_center =
         window_size / 2;
 
     uint8_t window[window_size];

@@ -1,5 +1,6 @@
 CC     = gcc
-CFLAGS = -std=c99 -DPROFILE -DPROFILER_VERBOSE_OUTPUT
+CFLAGS = -std=gnu11 -DPROFILE -DPROFILER_VERBOSE_OUTPUT
+LDLIBS = -lm -lpthread
 
 EXECUTABLES = ips_c_unoptimized   \
               ips_asm_unoptimized \
@@ -27,28 +28,29 @@ HEADERS = bmp.h                       \
 
 SOURCES = ips.c
 
-PROFILE_IMAGE  = test/test_image.bmp
-PROFILE_OUTPUT = test/test_image_processed.bmp
+PROFILE_IMAGE   = test/test_image.bmp
+PROFILE_IMAGE_2 = test/test_image_small.bmp
+PROFILE_OUTPUT  = test/test_image_processed.bmp
 
 .PHONY: all
 all : $(EXECUTABLES)
 
 ips_c_unoptimized : ${SOURCES} $(HEADERS)
-	$(CC) $(CFLAGS) -DFILTERS_C_IMPLEMENTATION -O0 -o $@ $<
+	$(CC) $(CFLAGS) -DFILTERS_C_IMPLEMENTATION -O0 -o $@ $< $(LDLIBS)
 
 ips_asm_unoptimized : ${SOURCES} $(HEADERS)
-	$(CC) $(CFLAGS) -DFILTERS_X87_ASM_IMPLEMENTATION -O0 -o $@ $<
+	$(CC) $(CFLAGS) -DFILTERS_X87_ASM_IMPLEMENTATION -O0 -o $@ $< $(LDLIBS)
 
 ips_c_optimized : ${SOURCES} $(HEADERS)
-	$(CC) $(CFLAGS) -DFILTERS_C_IMPLEMENTATION -O3 -ffast-math -flto -o $@ $<
+	$(CC) $(CFLAGS) -DFILTERS_C_IMPLEMENTATION -O3 -ffast-math -flto -o $@ $< $(LDLIBS)
 
 ips_asm_optimized : ${SOURCES} $(HEADERS)
-	$(CC) $(CFLAGS) -DFILTERS_SIMD_ASM_IMPLEMENTATION -O3 -ffast-math -flto -o $@ $<
+	$(CC) $(CFLAGS) -DFILTERS_SIMD_ASM_IMPLEMENTATION -O3 -ffast-math -flto -o $@ $< $(LDLIBS)
 
 profile : $(EXECUTABLES)
 	for executable in $(EXECUTABLES) ; do ./$$executable brightness-contrast 10 2 $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
 	for executable in $(EXECUTABLES) ; do ./$$executable sepia $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
-	for executable in $(EXECUTABLES) ; do ./$$executable median $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
+	for executable in $(EXECUTABLES) ; do ./$$executable median $(PROFILE_IMAGE_2) $(PROFILE_OUTPUT) ; done
 
 .PHONY: clean
 clean :

@@ -34,11 +34,12 @@ to understand how you can work with bitmap data.
 ### Tasks
 
 1. Use the provided template, and specifically modify the
-   `filters_apply_brightness_contrast(...)` function by inserting inline GCC assembly to
-   your code. If you do not like GCC inline assembly, you can create a separate
-   assembly `.s` file, modify the build rules in `Makefile` to assemble the file
-   separately and then to link it with the other `.o` files from C. Do not
-   forget to perform a call to your assembly function from the C file.
+   `filters_apply_brightness_contrast(...)` function by inserting inline GCC
+   assembly to your code. If you do not like GCC inline assembly, you can create
+   a separate assembly `.s` file, modify the build rules in `Makefile` to
+   assemble the file separately and then to link it with the other `.o` files
+   from C. Do not forget to perform a call to your assembly function from the C
+   file.
 
 2. Benchmark your solution, by compiling and running `make profile`.
 
@@ -61,11 +62,12 @@ same time. Then store the result back to memory.
 ### Tasks
 
 1. Use the provided template, and specifically modify the
-   `filters_apply_brightness_contrast(...)` function by inserting inline GCC assembly to
-   your code. If you do not like GCC inline assembly, you can create a separate
-   assembly `.s` file, modify the build rules in `Makefile` to assemble the file
-   separately and then to link it with the other `.o` files from C. Do not
-   forget to perform a call to your assembly function from the C file.
+   `filters_apply_brightness_contrast(...)` function by inserting inline GCC
+   assembly to your code. If you do not like GCC inline assembly, you can create
+   a separate assembly `.s` file, modify the build rules in `Makefile` to
+   assemble the file separately and then to link it with the other `.o` files
+   from C. Do not forget to perform a call to your assembly function from the C
+   file.
 
 2. Benchmark your solution, by compiling and running `make profile`.
 
@@ -138,11 +140,11 @@ parallelized. To deal with the problem, you have to implement a sorting network
 algorithm, called bitonic sort. Your task will be to study and understand the
 idea behind sorting networks and a certain implementation of the bitonic sort
 adapted to work with AVX registers on your own from the following research
-[paper](https://arxiv.org/pdf/1704.08579.pdf) written by Berenger
-Bramas. You have to read the whole paper, understand it, and find out the
-necessary bits that you need to use in your work. Note, that you only need to
-implement the bitonic sort without merging for a box window of up to 4 by 4
-channel values to get a full grade.
+[paper](https://arxiv.org/pdf/1704.08579.pdf) written by Berenger Bramas. You
+have to read the whole paper, understand it, and find out the necessary bits
+that you need to use in your work. Note, that you only need to implement the
+bitonic sort without merging for a box window of up to 4 by 4 channel values to
+get a full grade.
 
 ![The Median Filter](https://i.imgur.com/x2gXSpe.png)
 
@@ -179,7 +181,9 @@ channel values to get a full grade.
 
 ## Compilation and Usage
 
-1. Get access to a Linux machine running on a Skylake CPU.
+1. Get access to a Linux machine running on a Skylake CPU. You can use lab
+   machines or a dedicated test server at `arch.auca.space`. The same
+   credentials as from the `auca.space` server can be used to login into it.
 
 2. Ensure that the machine has `git`, `make`, `gcc`, and `gdb` installed.
 
@@ -201,13 +205,15 @@ cd ips-arch-project
 make
 ```
 
-6. Run some versions of the compiled program (C, x87 ASM, SIMD ASM) without arguments. The executables will print the usage message.
+6. Run some versions of the compiled program (C, x87 ASM, SIMD ASM) without
+   arguments. The executables will print the usage message.
 
 ```bash
 ./ips_c_unoptimized
 ```
 
-7. Use the system to process some 24-bit BMP images. Try not to use large images with the median filter.
+7. Use the system to process some 24-bit BMP images. Try not to use large images
+   with the median filter.
 
 ```bash
 ./ips_c_unoptimized brightness-contrast -100 2 test/test_image.bmp test/test_image_result_1.bmp
@@ -215,18 +221,23 @@ make
 ./ips_c_unoptimized median test/test_image_small.bmp test/test_image_result_3.bmp
 ```
 
-8. Try out the profile rule from the `Makefile`. It will compile all the programs with the profiling code enabled. Then it
-   will run them in turnes on the test images to compare the differences in timing. Note, that you can increase the number of
-   profiling passes in `ips.c` to avoid the problem of cold CPU caches.
+8. Try out the profile rule from the `Makefile`. It will compile all the
+   programs with the profiling code enabled. Then, it will run them in turnes on
+   the test images to compare the differences in timing. Note, that you can
+   increase the number of profiling passes in `ips.c` to avoid the problem of
+   having cold CPU caches.
 
 ```bash
 make profile
 ```
 
-9. Start working on the x87 and SIMD optimized assembly versions in the `filters.impl.h.c` file. You can either use the GCC inline
-   assembly or create a separate `.s` file with exported (`.global`) labels to jump to or call from the C source file. Do not forget
-   to add your custom `.s` files to the `Makefile` to assemble and link with the final executables. For inline assembly you do not
-   need to modify the build system. Just call `make` to recompile all the versions.
+9. Start working on the x87 and SIMD optimized assembly versions in the
+   `filters.impl.h.c` file. You can either use the GCC inline assembly or create
+   a separate `.s` file with exported (`.global`) labels to jump to or call from
+   the C source file. Do not forget to add your custom `.s` files to the
+   `Makefile` to assemble and link with the final executables. For inline
+   assembly you do not need to modify the build system. Just call `make` to
+   recompile all the versions.
 
 ## Deliverables
 

@@ -80,10 +80,7 @@ static void threadpool_destroy(threadpool_t *threadpool)
 
     if (NULL != threadpool->threads) {
         for (size_t i = 0; i < threadpool->thread_count; ++i) {
-            if (NULL != threadpool->threads[i]) {
-                pthread_join(threadpool->threads[i], NULL);
-                threadpool->threads[i] = NULL;
-            }
+            pthread_join(threadpool->threads[i], NULL);
         }
 
         free(threadpool->threads);
