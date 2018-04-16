@@ -187,7 +187,8 @@ get a full grade.
 
 2. Ensure that the machine has `git`, `make`, `gcc`, and `gdb` installed.
 
-3. Get the sources.
+3. Get the sources. Ensure that [git-lfs](https://git-lfs.github.com/) is
+   installed to get the large test images together with sources.
 
 ```bash
 git clone https://github.com/toksaitov/ips-arch-project.git
