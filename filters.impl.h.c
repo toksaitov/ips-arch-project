@@ -185,6 +185,158 @@ static inline void filters_apply_sepia(
                       255.0f
                   );
 
+#elif defined FILTERS_X87_ASM_IMPLEMENTATION
+
+#if defined x86_32_CPU
+
+    __asm__ __volatile__ (
+        "subl $0x14, %%esp\n\t"
+
+        "xorl %%eax, %%eax\n\t"
+        "movl $0xff, %%edx\n\t"
+
+        "movb (%1,%2), %%al\n\t"
+        "movl %%eax, (%%esp)\n\t"
+
+        "movb 0x1(%1,%2), %%al\n\t"
+        "movl %%eax, 0x4(%%esp)\n\t"
+
+        "filds (%%esp)\n\t"
+        "filds 0x4(%%esp)\n\t"
+
+        "fldl (%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x8(%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x10(%0)\n\t"
+        "fmul %%st(4), %%st\n\t"
+        "faddp\n\t"
+        "faddp\n\t"
+        "fistpl 0x8(%%esp)\n\t"
+
+        "fldl 0x18(%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x20(%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x28(%0)\n\t"
+        "fmul %%st(4), %%st\n\t"
+        "faddp\n\t"
+        "faddp\n\t"
+        "fistpl 0xc(%%esp)\n\t"
+
+        "fldl 0x30(%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x38(%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x40(%0)\n\t"
+        "fmul %%st(4), %%st\n\t"
+        "faddp\n\t"
+        "faddp\n\t"
+        "fistpl 0x10(%%esp)\n\t"
+
+        "fstp %%st\n\t"
+        "fstp %%st\n\t"
+
+        "movl 0x8(%%esp), %%eax\n\t"
+        "cmpl %%edx, %%eax\n\t"
+        "cmoval %%edx, %%eax\n\t"
+        "movb %%al, (%1,%2)\n\t"
+
+        "movl 0xc(%%esp), %%eax\n\t"
+        "cmpl %%edx, %%eax\n\t"
+        "cmoval %%edx, %%eax\n\t"
+        "movb %%al, 0x1(%1,%2)\n\t"
+
+        "movl 0x10(%%esp), %%eax\n\t"
+        "cmpl %%edx, %%eax\n\t"
+        "cmoval %%edx, %%eax\n\t"
+        "movb %%al, 0x2(%1,%2)\n\t"
+
+        "addl $0x14, %%esp\n\t"
+    ::
+        "S"(Sepia_Coefficients),
+        "b"(pixels), "c"(position)
+    :
+        "%eax", "%edx"
+    );
+
+#elif defined x86_64_CPU
+
+    __asm__ __volatile__ (
+        "subq $0x28, %%rsp\n\t"
+
+        "xorq %%rax, %%rax\n\t"
+        "movq $0xff, %%rdx\n\t"
+
+        "movb (%1,%2), %%al\n\t"
+        "movq %%rax, (%%rsp)\n\t"
+
+        "movb 0x1(%1,%2), %%al\n\t"
+        "movq %%rax, 0x8(%%rsp)\n\t"
+
+        "fildl (%%rsp)\n\t"
+        "fildl 0x8(%%rsp)\n\t"
+
+        "fldl (%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x8(%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x10(%0)\n\t"
+        "fmul %%st(4), %%st\n\t"
+        "faddp\n\t"
+        "faddp\n\t"
+        "fistpq 0x10(%%rsp)\n\t"
+
+        "fldl 0x18(%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x20(%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x28(%0)\n\t"
+        "fmul %%st(4), %%st\n\t"
+        "faddp\n\t"
+        "faddp\n\t"
+        "fistpq 0x18(%%rsp)\n\t"
+
+        "fldl 0x30(%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x38(%0)\n\t"
+        "fmul %%st(2), %%st\n\t"
+        "fldl 0x40(%0)\n\t"
+        "fmul %%st(4), %%st\n\t"
+        "faddp\n\t"
+        "faddp\n\t"
+        "fistpq 0x20(%%rsp)\n\t"
+
+        "fstp %%st\n\t"
+        "fstp %%st\n\t"
+
+        "movq 0x10(%%rsp), %%rax\n\t"
+        "cmpq %%rdx, %%rax\n\t"
+        "cmovaq %%rdx, %%rax\n\t"
+        "movb %%al, (%1,%2)\n\t"
+
+        "movq 0x18(%%rsp), %%rax\n\t"
+        "cmpq %%rdx, %%rax\n\t"
+        "cmovaq %%rdx, %%rax\n\t"
+        "movb %%al, 0x1(%1,%2)\n\t"
+
+        "movq 0x20(%%rsp), %%rax\n\t"
+        "cmpq %%rdx, %%rax\n\t"
+        "cmovaq %%rdx, %%rax\n\t"
+        "movb %%al, 0x2(%1,%2)\n\t"
+
+        "addq $0x28, %%rsp\n\t"
+    ::
+        "S"(Sepia_Coefficients),
+        "b"(pixels), "c"(position)
+    :
+        "%rax", "%rdx"
+    );
+
+#else
+#error "Unsupported processor architecture"
+#endif
+
 #elif defined FILTERS_SIMD_ASM_IMPLEMENTATION
 
 #if defined x86_32_CPU
