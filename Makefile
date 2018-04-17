@@ -47,6 +47,7 @@ ips_c_optimized : ${SOURCES} $(HEADERS)
 ips_asm_optimized : ${SOURCES} $(HEADERS)
 	$(CC) $(CFLAGS) -DFILTERS_SIMD_ASM_IMPLEMENTATION -O3 -ffast-math -flto -o $@ $< $(LDLIBS)
 
+.PHONY: profile
 profile : $(EXECUTABLES)
 	for executable in $(EXECUTABLES) ; do ./$$executable brightness-contrast 10 2 $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
 	for executable in $(EXECUTABLES) ; do ./$$executable sepia $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
