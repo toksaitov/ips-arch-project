@@ -189,6 +189,7 @@ static inline void filters_apply_sepia(
 
 #if defined x86_32_CPU
 
+    // Similar, but not a one to one conversion of the C code above. Try to find in what way.
     __asm__ __volatile__ (
         "subl $0x14, %%esp\n\t"
 
@@ -262,6 +263,7 @@ static inline void filters_apply_sepia(
 
 #elif defined x86_64_CPU
 
+    // Similar, but not a one to one conversion of the C code above. Try to find in what way.
     __asm__ __volatile__ (
         "subq $0x28, %%rsp\n\t"
 
