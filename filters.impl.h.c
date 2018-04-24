@@ -112,7 +112,71 @@ static inline void filters_apply_brightness_contrast(
 #elif defined x86_64_CPU
 
     __asm__ __volatile__ (
-        "\n\t" :::
+        "subq $0x18, %%rsp\n\t"
+
+        "xorq %%rax, %%rax\n\t"
+
+        "movb (%2,%3), %%al\n\t"
+        "movq %%rax, (%%rsp)\n\t"
+
+        "movb 0x1(%2,%3), %%al\n\t"
+        "movq %%rax, 0x8(%%rsp)\n\t"
+
+        "movb 0x2(%2,%3), %%al\n\t"
+        "movq %%rax, 0x10(%%rsp)\n\t"
+
+        "fildl (%%rsp)\n\t"
+        "fildl 0x8(%%rsp)\n\t"
+        "fildl 0x10(%%rsp)\n\t"
+
+        "flds (%1)\n\t"
+        "fmulp\n\t"
+        "flds (%0)\n\t"
+        "faddp\n\t"
+        "fistpq 0x10(%%rsp)\n\t"
+
+        "flds (%1)\n\t"
+        "fmulp\n\t"
+        "flds (%0)\n\t"
+        "faddp\n\t"
+        "fistpq 0x8(%%rsp)\n\t"
+
+        "flds (%1)\n\t"
+        "fmulp\n\t"
+        "flds (%0)\n\t"
+        "faddp\n\t"
+        "fistpq (%%rsp)\n\t"
+
+        "movq $0xff, %%rdx\n\t"
+        "movq $0x0, %%r8\n\t"
+
+        "movq (%%rsp), %%rax\n\t"
+        "cmpq %%rdx, %%rax\n\t"
+        "cmovaq %%rdx, %%rax\n\t"
+        "cmpq %%r8, %%rax\n\t"
+        "cmovbq %%r8, %%rax\n\t"
+        "movb %%al, (%2,%3)\n\t"
+
+        "movq 0x8(%%rsp), %%rax\n\t"
+        "cmpq %%rdx, %%rax\n\t"
+        "cmovaq %%rdx, %%rax\n\t"
+        "cmpq %%r8, %%rax\n\t"
+        "cmovbq %%r8, %%rax\n\t"
+        "movb %%al, 0x1(%2,%3)\n\t"
+
+        "movq 0x10(%%rsp), %%rax\n\t"
+        "cmpq %%rdx, %%rax\n\t"
+        "cmovaq %%rdx, %%rax\n\t"
+        "cmpq %%r8, %%rax\n\t"
+        "cmovbq %%r8, %%rax\n\t"
+        "movb %%al, 0x2(%2,%3)\n\t"
+
+        "addq $0x18, %%rsp\n\t"
+    ::
+        "S"(&brightness), "D"(&contrast),
+        "b"(pixels), "c"(position)
+    :
+        "%rax", "%rdx", "%r8"
     );
 
 #else
