@@ -112,7 +112,7 @@ static inline void filters_apply_brightness_contrast(
 #elif defined x86_64_CPU
 
     __asm__ __volatile__ (
-        "subq $0x18, %%rsp\n\t"
+        "subq $0x2F, %%rsp\n\t"//0x2E works too, in case of 0x2D -> last color (which is blue in this case) doesn't change, making the changes blue...  
 
         "xorq %%rax, %%rax\n\t"
 
@@ -152,26 +152,26 @@ static inline void filters_apply_brightness_contrast(
 
         "movq (%%rsp), %%rax\n\t"
         "cmpq %%rdx, %%rax\n\t"
-        "cmovaq %%rdx, %%rax\n\t"
+        "cmovgq %%rdx, %%rax\n\t"//should use "greater" and "less" since working with signed integers
         "cmpq %%r8, %%rax\n\t"
-        "cmovbq %%r8, %%rax\n\t"
+        "cmovlq %%r8, %%rax\n\t"
         "movb %%al, (%2,%3)\n\t"
 
         "movq 0x8(%%rsp), %%rax\n\t"
         "cmpq %%rdx, %%rax\n\t"
-        "cmovaq %%rdx, %%rax\n\t"
+        "cmovgq %%rdx, %%rax\n\t"
         "cmpq %%r8, %%rax\n\t"
-        "cmovbq %%r8, %%rax\n\t"
+        "cmovlq %%r8, %%rax\n\t"
         "movb %%al, 0x1(%2,%3)\n\t"
 
         "movq 0x10(%%rsp), %%rax\n\t"
         "cmpq %%rdx, %%rax\n\t"
-        "cmovaq %%rdx, %%rax\n\t"
+        "cmovgq %%rdx, %%rax\n\t"
         "cmpq %%r8, %%rax\n\t"
-        "cmovbq %%r8, %%rax\n\t"
+        "cmovlq %%r8, %%rax\n\t"
         "movb %%al, 0x2(%2,%3)\n\t"
 
-        "addq $0x18, %%rsp\n\t"
+        "addq $0x2F, %%rsp\n\t"
     ::
         "S"(&brightness), "D"(&contrast),
         "b"(pixels), "c"(position)
