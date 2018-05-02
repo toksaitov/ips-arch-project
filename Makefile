@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -g -std=gnu11 -DPROFILE -DPROFILER_VERBOSE_OUTPUT
+CFLAGS = -std=gnu11 -DPROFILE -DPROFILER_VERBOSE_OUTPUT // -g for debugging
 LDLIBS = -lm -lpthread
 
 EXECUTABLES = ips_c_unoptimized   \
