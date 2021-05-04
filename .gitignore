@@ -1,0 +1,6 @@
+*.o
+*.dSYM
+ips_asm_optimized
+ips_asm_unoptimized
+ips_c_optimized
+ips_c_unoptimized
