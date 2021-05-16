@@ -536,7 +536,7 @@ static inline void filters_apply_sepia(
     __m512 temp1 = floats;
     __m512 temp2 = floats;
     __m512 temp3 = floats;
-    temp1 = _mm512_permute_ps(temp1, 0b11000001);
+    temp1 = _mm512_permute_ps(temp1, 0b11000000);
     temp2 = _mm512_permute_ps(temp2, 0b11010101);
     temp3 = _mm512_permute_ps(temp3, 0b11101010);
     floats = _mm512_mul_ps(coeff1, temp1);
