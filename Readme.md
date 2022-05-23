@@ -41,7 +41,17 @@ instruction by instruction.
 
 3. Write the intrinsics.
 
-4. Test the code on a machine that supports AVX512 instructions.
+4. Compile your code with `make`.
+
+5. Profile your code with `make profile`.
+
+6. Test the code on Kaggle machines with the support of the AVX512 extensions.
+   You can use the `avx512-env.ipynb` Jupiter notebook to prepare the
+   environment on their server. You will have to register an account.
+   Sometimes, you have to reload the notebook to get a server with the CPU
+   supporting `AVX512f` SIMD instructions. It is recommended to use the
+   `auca.space` server to develop and write code and only test on Kaggle
+   machines.
 
 ## Task #2, The Sepia Filter
 
@@ -64,17 +74,27 @@ written by Petter Larsson and Eric Palmer.
 
 3. Write the inline assembly.
 
-4. Test the code on a machine that supports AVX512 instructions.
+4. Compile your code with `make`.
+
+5. Profile your code with `make profile`.
+
+6. Test the code on Kaggle machines with the support of the AVX512 extensions.
+   You can use the `avx512-env.ipynb` Jupiter notebook to prepare the
+   environment on their server. You will have to register an account.
+   Sometimes, you have to reload the notebook to get a server with the CPU
+   supporting `AVX512f` SIMD instructions. It is recommended to use the
+   `auca.space` server to develop and write code and only test on Kaggle
+   machines.
 
 ### What to Submit
 
 1. In your private course repository that was given to you by the instructor
-   during the lecture, create the path `project/task-1/`.
+   during the lecture, create the path `project/task-01/`.
 
 2. Put the `filters.impl.h.c` with intrinsics for task #1.
 
 1. In your private course repository that was given to you by the instructor
-   during the lecture, create the path `project/task-2/`.
+   during the lecture, create the path `project/task-02/`.
 
 2. Put the `filters.impl.h.c` with inline assembly for task #2.
 
