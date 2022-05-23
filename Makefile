@@ -29,30 +29,36 @@ HEADERS = bmp.h                       \
 
 SOURCES = ips.c
 
-PROFILE_IMAGE   = test/test_image.bmp
-PROFILE_IMAGE_2 = test/test_image_small.bmp
-PROFILE_OUTPUT  = test/test_image_processed.bmp
+PROFILE_IMAGE   = test_image.bmp
+PROFILE_IMAGE_2 = test_image_small.bmp
+PROFILE_OUTPUT  = test_image_processed.bmp
 
 .PHONY: all
 all : $(EXECUTABLES)
 
-ips_c_unoptimized : ${SOURCES} $(HEADERS)
+ips_c_unoptimized : $(SOURCES) $(HEADERS)
 	$(CC) $(CFLAGS) -DFILTERS_C_IMPLEMENTATION -O0 -o $@ $< $(LDLIBS)
 
-ips_asm_unoptimized : ${SOURCES} $(HEADERS)
+ips_asm_unoptimized : $(SOURCES) $(HEADERS)
 	$(CC) $(CFLAGS) -DFILTERS_X87_ASM_IMPLEMENTATION -O0 -o $@ $< $(LDLIBS)
 
-ips_c_optimized : ${SOURCES} $(HEADERS)
+ips_c_optimized : $(SOURCES) $(HEADERS)
 	$(CC) $(CFLAGS) -DFILTERS_C_IMPLEMENTATION -O3 -mavx512f -ffast-math -flto -o $@ $< $(LDLIBS)
 
-ips_asm_optimized : ${SOURCES} $(HEADERS)
+ips_asm_optimized : $(SOURCES) $(HEADERS)
 	$(CC) $(CFLAGS) -DFILTERS_SIMD_ASM_IMPLEMENTATION -O0 -Wno-attributes -mavx512f -ffast-math -flto -o $@ $< $(LDLIBS)
 
-ips_asm_intr_optimized : ${SOURCES} $(HEADERS)
+ips_asm_intr_optimized : $(SOURCES) $(HEADERS)
 	$(CC) $(CFLAGS) -DFILTERS_SIMD_ASM_IMPLEMENTATION -DINTRINSICS -O3 -Wno-attributes -mavx512f -ffast-math -flto -o $@ $< $(LDLIBS)
 
+$(PROFILE_IMAGE) :
+	curl --location -C - --output '$(PROFILE_IMAGE)' 'https://www.dropbox.com/s/jevpkoris58avyv/test_image.bmp?dl=1'
+
+$(PROFILE_IMAGE_2) :
+	curl --location -C - --output '$(PROFILE_IMAGE_2)' 'https://www.dropbox.com/s/jevpkoris58avyv/test_image.bmp?dl=1'
+
 .PHONY: profile
-profile : $(EXECUTABLES)
+profile : $(EXECUTABLES) $(PROFILE_IMAGE) $(PROFILE_IMAGE_2)
 	for executable in $(EXECUTABLES) ; do echo "./$$executable brightness-contrast 10 2 $(PROFILE_IMAGE) $(PROFILE_OUTPUT)" ; ./$$executable brightness-contrast 10 2 $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
 	for executable in $(EXECUTABLES) ; do echo "./$$executable sepia $(PROFILE_IMAGE) $(PROFILE_OUTPUT)" ; ./$$executable sepia $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
 	for executable in $(EXECUTABLES) ; do echo "./$$executable median $(PROFILE_IMAGE) $(PROFILE_OUTPUT)" ; ./$$executable median $(PROFILE_IMAGE) $(PROFILE_OUTPUT) ; done
